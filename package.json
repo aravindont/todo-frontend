@@ -1,5 +1,5 @@
 {
-  "name": "auth-app",
+  "name": "todo-frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,8 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "appwrite": "^10.2.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",
