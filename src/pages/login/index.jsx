@@ -17,6 +17,12 @@ function LoginPage() {
         credentials.email,
         credentials.password
       );
+      dispatch(
+        setUser({
+          userId: user.$id,
+          userName: user.name,
+        })
+      );
       console.log(session);
       navigate("/");
     } catch (error) {
