@@ -1,8 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-  todos: [],
-};
+const initialState = [];
 
 export const todosSlice = createSlice({
   name: "todos",

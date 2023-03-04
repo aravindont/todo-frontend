@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { account } from "../../appwrite/appwrite.config";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/userSlice";
 function LoginPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const handleChange = (e) => {
@@ -17,19 +20,20 @@ function LoginPage() {
         credentials.email,
         credentials.password
       );
+      const user = await account.get();
       dispatch(
         setUser({
           userId: user.$id,
-          userName: user.name,
+          username: user.name,
         })
       );
-      console.log(session);
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error(error);
       setError("Invalid email or password");
     }
   };
+
   return (
     <>
       <div className="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">

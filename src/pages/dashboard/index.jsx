@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { IoAdd } from "react-icons/io5";
+import { BsPlusCircle } from "react-icons/bs";
+import { useSelector } from "react-redux";
+
+import Navbar from "../../components/Navbar";
+import TodoList from "../../components/TodoList";
+
 function DashboardPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <>
       <div>
-        <IoAdd
-          className="p-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
-          onClick={setIsModalOpen((prevState) => !prevState)}
-        />
-        {isModalOpen && <AddTodoModal />}
+        <Navbar />
+        <TodoList />
       </div>
     </>
   );

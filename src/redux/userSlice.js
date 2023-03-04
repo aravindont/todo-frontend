@@ -12,13 +12,13 @@ const userSlice = createSlice({
       state.userId = action.payload.userId;
       state.username = action.payload.username;
     },
-    logout: (state) => {
+    logoutUser: (state) => {
       state.userId = null;
       state.username = null;
     },
   },
 });
 
-export const { setUser, logout } = userSlice.actions;
+export const { setUser, logoutUser } = userSlice.actions;
 
 export default userSlice.reducer;

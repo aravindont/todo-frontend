@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { account } from "../../appwrite/appwrite.config";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
+
 function SignupPage() {
   const [formData, setFormData] = useState({
     username: "",
@@ -9,13 +10,40 @@ function SignupPage() {
     password: "",
   });
 
+  const [formErrors, setFormErrors] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
   const navigate = useNavigate();
+
   const handleInputChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Validate form data
+    let errors = {};
+    if (!formData.username) {
+      errors.username = "Username is required";
+    }
+    if (!formData.email) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = "Invalid email format";
+    }
+    if (!formData.password) {
+      errors.password = "Password is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
     try {
       const { email, password, username } = formData;
       const response = await account.create(
@@ -52,9 +80,16 @@ function SignupPage() {
                     type="text"
                     autoComplete="name"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className={`appearance-none block w-full px-3 py-2 border ${
+                      formErrors.username ? "border-red-500" : "border-gray-300"
+                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     onChange={handleInputChange}
                   />
+                  {formErrors.username && (
+                    <p className="mt-1 text-xs text-red-500">
+                      Please enter a username.
+                    </p>
+                  )}
                 </div>
               </div>
               <div>
@@ -69,12 +104,18 @@ function SignupPage() {
                     id="email"
                     name="email"
                     type="email"
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className={`appearance-none block w-full px-3 py-2 border ${
+                      formErrors.email ? "border-red-500" : "border-gray-300"
+                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     onChange={handleInputChange}
                   />
+                  {formErrors.email && (
+                    <p className="mt-1 text-xs text-red-500">
+                      Please enter a valid email address.
+                    </p>
+                  )}
                 </div>
               </div>
-
               <div>
                 <label
                   htmlFor="password"
@@ -89,12 +130,18 @@ function SignupPage() {
                     type="password"
                     autoComplete="current-password"
                     required
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className={`appearance-none block w-full px-3 py-2 border ${
+                      formErrors.password ? "border-red-500" : "border-gray-300"
+                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                     onChange={handleInputChange}
                   />
+                  {formErrors.password && (
+                    <p className="mt-1 text-xs text-red-500">
+                      Please enter a password.
+                    </p>
+                  )}
                 </div>
               </div>
-
               <div>
                 <button
                   type="submit"
