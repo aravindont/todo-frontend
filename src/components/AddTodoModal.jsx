@@ -2,8 +2,8 @@ function AddTodoModal({ isOpen, onClose }) {
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex justify-center items-center">
-          <div className="absolute inset-0 bg-gray-500 opacity-50"></div>
+        <div className="fixed inset-0 z-50 flex justify-center items-center ">
+          <div className="inset-0 bg-blue-200 bg-opacity-5 backdrop-blur-lg absolute"></div>
           <div className="z-10 p-6 bg-white rounded-md shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-bold">Add New Todo</h2>
