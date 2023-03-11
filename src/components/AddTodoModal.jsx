@@ -1,4 +1,36 @@
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setTodos } from "../redux/todosSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes, faPlus } from "@fortawesome/free-solid-svg-icons";
+import TaskList from "./TaskList";
+import axios from "axios";
 function AddTodoModal({ isOpen, onClose }) {
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const userId = user.userId;
+  const [title, setTitle] = useState("");
+  const [tasks, setTasks] = useState([]);
+  const [task, setTask] = useState("");
+
+  const addTask = () => {
+    setTasks([...tasks, task]);
+    setTask("");
+  };
+
+  const handleAddTodo = async () => {
+    const newTodo = {
+      userId: userId,
+      title: title,
+      task: tasks,
+    };
+    await axios.post("/api/todo", newTodo);
+    setTitle("");
+    setTask("");
+    setTasks([]);
+    const response = await axios.get(`/api/todo/${userId}`);
+    dispatch(setTodos(response.data));
+  };
   return (
     <>
       {isOpen && (
@@ -7,48 +39,51 @@ function AddTodoModal({ isOpen, onClose }) {
           <div className="z-10 p-6 bg-white rounded-md shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-bold">Add New Todo</h2>
-              <button
+              <span
                 onClick={onClose}
-                className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+                className="bg-gray-500 text-2xl rounded-full p-2 text-white flex justify-center items-center h-10 w-10"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
+                <FontAwesomeIcon icon={faTimes} />
+              </span>
             </div>
+            {/* TODO Title */}
             <div className="mb-6">
               <label className="block mb-2 font-bold">Title</label>
               <input
                 type="text"
                 placeholder="Title"
                 className="w-full px-3 py-2 border rounded-md"
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}
               />
             </div>
+            {/* Tasks  */}
             <div className="mb-6">
               <label className="block mb-2 font-bold">Tasks</label>
-              <input
-                type="text"
-                placeholder="Tasks"
-                className="w-full px-3 py-2 border rounded-md"
-              />
+              <div className="flex ">
+                <input
+                  type="text"
+                  placeholder="Tasks"
+                  className="w-full px-3 py-2 border rounded-md"
+                  onChange={(e) => setTask(e.target.value)}
+                  value={task}
+                />
+                <button
+                  className="px-3 py-2 bg-gray-900 text-white rounded-md"
+                  onClick={addTask}
+                >
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
+              </div>
             </div>
+            {/* tasklist */}
+            <TaskList tasks={tasks} />
             <div className="flex justify-end">
-              <button className="px-4 py-2 mr-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+              <button
+                className="px-4 py-2 mr-2 text-white bg-blue-500 rounded-md"
+                onClick={handleAddTodo}
+              >
                 Add Todo
-              </button>
-              <button className="px-4 py-2 text-gray-500 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
-                Cancel
               </button>
             </div>
           </div>
