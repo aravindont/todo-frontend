@@ -6,10 +6,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 function ViewTodosModal({ isOpen, onClose, todo }) {
-  const [todoData, setTodoData] = useState(null);
+  const [todoData, setTodoData] = useState(todo);
   const [editIndex, setEditIndex] = useState(null);
   const [task, setTask] = useState("");
   const [newTask, setNewTask] = useState("");
@@ -20,48 +20,67 @@ function ViewTodosModal({ isOpen, onClose, todo }) {
     }
   }, [todo]);
 
-  const handleEdit = (index, task) => {
+  const handleEdit = useCallback((index, task) => {
     setEditIndex(index);
-    setTask(todoData.tasks[index]);
-  };
+    setTask(task);
+  }, []);
 
-  const handleSave = async (index) => {
-    const response = await axios.put("/api/task", {
-      id: todoData._id,
-      key: index,
-      newTask: task,
-    });
-    setEditIndex(null);
-    setTask(null);
-    setTodoData((prevState) => {
-      const tasks = [...prevState.tasks];
-      tasks[index] = task;
-      return { ...prevState, tasks };
-    });
-  };
+  const handleSave = useCallback(
+    async (index) => {
+      const response = await axios.put("/api/task", {
+        id: todo._id,
+        key: index,
+        newTask: task,
+      });
+      const updatedTodo = { ...todo, tasks: response.data.tasks };
+      setEditIndex("");
+      setTask("");
+      setTodoData(updatedTodo);
+    },
+    [task, todo]
+  );
 
-  const handleDelete = async (taskIndex) => {
-    await axios.delete("/api/task", {
-      data: {
-        id: todoData._id,
-        key: taskIndex,
-      },
-    });
-    setTodoData((prevState) => {
-      const tasks = [...prevState.tasks];
-      tasks.splice(taskIndex, 1);
-      return { ...prevState, tasks };
-    });
-  };
+  const handleDelete = useCallback(
+    async (taskIndex) => {
+      const response = await axios.delete("/api/task", {
+        data: {
+          id: todoData._id,
+          key: taskIndex,
+        },
+      });
+      setTodoData((prevState) => ({
+        ...prevState,
+        tasks: response.data.tasks,
+      }));
+    },
+    [todoData]
+  );
 
-  const handleAddTask = async () => {
+  const handleAddTask = useCallback(async () => {
     const response = await axios.post("/api/task", {
       id: todoData._id,
       task: newTask,
     });
+    setTodoData((prevState) => ({
+      ...prevState,
+      tasks: response.data.tasks,
+    }));
     setNewTask("");
-    setTodoData(response.data);
-  };
+  }, [newTask, todoData]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setTodoData(null);
+    }
+  }, [isOpen]);
+  useEffect(() => {
+    if (!isOpen) {
+      setTodoData(null);
+      setEditIndex(null);
+      setTask("");
+      setNewTask("");
+    }
+  }, [isOpen]);
 
   if (!isOpen || !todoData) {
     return null;
@@ -73,7 +92,7 @@ function ViewTodosModal({ isOpen, onClose, todo }) {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-bold">{todoData?.title}</h2>
           <span
-            className="bg-gray-500 text-2xl rounded-full p-2 text-white flex justify-center items-center h-6 w-6"
+            className="bg-gray-500 text-2xl rounded-full p-1 text-white flex justify-center items-center h-6 w-6 cursor-pointer"
             onClick={onClose}
           >
             <FontAwesomeIcon icon={faTimes} />
@@ -129,6 +148,7 @@ function ViewTodosModal({ isOpen, onClose, todo }) {
         <div className="mt-4 flex gap-4">
           <input
             type="text"
+            value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
             className="border border-gray-400 py-2 px-3 rounded-sm text-sm w-full max-w-xs"
           />

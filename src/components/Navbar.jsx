@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
-import { account } from "../appwrite/appwrite.config";
+import { account, client } from "../appwrite/appwrite.config";
 import { logoutUser } from "../redux/userSlice";
 import UserAvatar from "./UserAvatar";
 function Navbar() {
@@ -16,7 +16,7 @@ function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await account.deleteSession();
+      await account.deleteSessions();
       dispatch(logoutUser());
       navigate("/login");
     } catch (error) {

@@ -2,7 +2,7 @@ function UserAvatar({ username, isModalOpen, handleLogout, setIsModalOpen }) {
   return (
     <>
       <div
-        className="rounded-full border-2 border-indigo-400 p-4 relative"
+        className="rounded-full border-2 border-indigo-400 p-2 relative cursor-pointer"
         onClick={() => setIsModalOpen(!isModalOpen)}
         aria-label="User avatar"
       >
@@ -10,9 +10,9 @@ function UserAvatar({ username, isModalOpen, handleLogout, setIsModalOpen }) {
           {username && username.slice(0, 2).toUpperCase()}
         </span>
         {isModalOpen && (
-          <div className="z-10 w-8 h-8 border-indigo-400 absolute top-16 drop-shadow-2xl ">
+          <div className="z-10 w-28 bg-white rounded-md shadow-lg absolute bottom-0-0 right-0">
             <button
-              className=" hover:bg-green-700 rounded p-1 hover:text-white transition-all"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 w-full text-left"
               onClick={handleLogout}
               aria-label="Log out"
             >

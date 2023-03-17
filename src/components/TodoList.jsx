@@ -15,7 +15,7 @@ function TodoList() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const handleToggleModal = () => {
-    setIsModalOpen((prevState) => !prevState);
+    setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
   };
 
   useEffect(() => {
@@ -59,11 +59,7 @@ function TodoList() {
             {todos?.map((todo, index) => (
               <div
                 key={todo._id}
-                className="flex items-center justify-between bg-gray-100 rounded-lg border border-gray-300 px-3 py-2 mt-1 hover:bg-gray-200"
-                onClick={() => {
-                  setViewIndex(index);
-                  setIsViewModalOpen(true);
-                }}
+                className="flex items-center justify-between bg-gray-100 rounded-lg border border-gray-300 px-3 py-2 mt-1"
               >
                 {editindex === index ? (
                   <input
@@ -75,38 +71,49 @@ function TodoList() {
                 ) : (
                   <div className="w-full">{todo.title}</div>
                 )}
+                <div className="flex">
+                  <button
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
+                    onClick={() => {
+                      setViewIndex(index);
+                      setIsViewModalOpen(true);
+                    }}
+                  >
+                    View
+                  </button>
 
-                {editindex === index ? (
-                  <div className="flex items-center">
+                  {editindex === index ? (
+                    <div className="flex items-center">
+                      <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                        onClick={() => handleSave(todo._id)}
+                      >
+                        Save
+                      </button>
+
+                      <button
+                        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => setEditindex(undefined)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
                     <button
                       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                      onClick={() => handleSave(todo._id)}
+                      onClick={(e) => handleEdit(index, todo.title, e)}
                     >
-                      Save
+                      Edit
                     </button>
+                  )}
 
-                    <button
-                      className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                      onClick={() => setEditindex(undefined)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
                   <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                    onClick={(e) => handleEdit(index, todo.title, e)}
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={(e) => handleDelete(e, todo._id)}
                   >
-                    Edit
+                    Delete
                   </button>
-                )}
-
-                <button
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={(e) => handleDelete(e, todo._id)}
-                >
-                  Delete
-                </button>
+                </div>
               </div>
             ))}
           </div>
