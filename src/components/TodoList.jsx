@@ -22,7 +22,7 @@ function TodoList() {
     if (userId) {
       dispatch(fetchTodos(userId));
     }
-  }, [userId, dispatch, todos]);
+  }, [userId, dispatch]);
 
   const handleEdit = (index, title, event) => {
     event.stopPropagation();

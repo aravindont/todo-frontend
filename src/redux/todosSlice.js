@@ -25,8 +25,21 @@ export const { setTodos, updateTodoTitle, deleteTodo } = todosSlice.actions;
 
 export const fetchTodos = (id) => async (dispatch) => {
   try {
-    const { data } = await axios.get(`/api/todo/${id}`);
-    dispatch(setTodos(data));
+    const response = await axios.get(`/api/todo/${id}`);
+    const todos = response.data;
+    dispatch(setTodos(todos));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const searchTodos = (userId, query) => async (dispatch) => {
+  try {
+    const response = await axios.get("/api/search", {
+      params: { userId, query },
+    });
+    const searchTodos = response.data;
+    dispatch(setTodos(searchTodos));
   } catch (error) {
     console.log(error);
   }

@@ -39,12 +39,12 @@ function AddTodoModal({ isOpen, onClose }) {
           <div className="z-10 p-6 bg-white rounded-md shadow-lg">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-bold">Add New Todo</h2>
-              <span
+              <button
                 onClick={onClose}
                 className="bg-gray-500 text-2xl rounded-full p-2 text-white flex justify-center items-center h-10 w-10"
               >
                 <FontAwesomeIcon icon={faTimes} />
-              </span>
+              </button>
             </div>
             {/* TODO Title */}
             <div className="mb-6">
